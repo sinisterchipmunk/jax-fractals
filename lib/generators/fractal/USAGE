@@ -1,0 +1,8 @@
+Description:
+    Generates a fractal image in public/images/fractals.
+
+Example:
+    rails generate fractal clouds
+
+    This will create:
+        public/images/fractals/clouds
