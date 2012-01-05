@@ -1,4 +1,27 @@
 class Fractal::Generator
+  class << self
+    def image(options = {:width => 128, :height => 128, :smoothness => 2,
+                         :high_color => 'ffffff', :low_color => '000000',
+                         :alpha => false})
+      fractal = new options[:width], options[:height],
+                    :seed => options[:seed].to_i,
+                    :smoothness => options[:smoothness]
+                    
+      if options[:alpha]
+        image = Magick::Image.new(fractal.width, fractal.height) { self.background_color = 'transparent' }
+        image.import_pixels 0, 0, fractal.width, fractal.height, 'IA', fractal.bytes.collect { |b| [b,b] }.flatten.pack('C*')
+      else
+        image = Magick::Image.new(fractal.width, fractal.height)
+        image.import_pixels 0, 0, fractal.width, fractal.height, 'I', fractal.bytes.pack('C*')
+      end
+      
+      options[:low_color] = '000000' if options[:low_color].blank?
+      options[:high_color] = 'ffffff' if options[:high_color].blank?
+      image = image.level_colors("##{options[:low_color]}", "##{options[:high_color]}", true)
+      image
+    end
+  end
+  
   INITIAL_RANGE = 400
   include Math
   attr_reader :map, :random, :smoothness, :seed

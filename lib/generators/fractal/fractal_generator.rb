@@ -12,15 +12,12 @@ class FractalGenerator < Rails::Generators::NamedBase
   class_option :height, :default => 128, :desc => "Height of the fractal image in pixels", :type => :numeric
   class_option :smoothness, :default => 2, :desc => "Smoothness factor (higher is smoother)", :type => :numeric
   class_option :dest, :default => "app/assets", :desc => "Where to place generated fractal", :type => :string
+  class_option :high_color, :default => 'ffffff', :desc => "Color to use for high intensity values", :type => :string
+  class_option :low_color, :default => '000000', :desc => "Color to use for low intensity values", :type => :string
+  class_option :alpha, :default => false, :desc => "Whether to save transparency data", :type => :boolean
   
   def generate_fractal
-    fractal = Fractal::Generator.new options[:width], options[:height],
-                                     :seed => options[:seed],
-                                     :smoothness => options[:smoothness]
-    
-    say "Random Seed: #{fractal.seed}"
-    image = Magick::Image.new(fractal.width, fractal.height) { self.depth = 8 }
-    image.import_pixels 0, 0, fractal.width, fractal.height, 'I', fractal.bytes.pack('C*')
-    create_file File.join(options[:dest], 'images/fractals', "#{name}.png"), image.to_blob { self.format = 'PNG' }
+    create_file File.join(options[:dest], 'images/fractals', "#{name}.png"),
+                Fractal::Generator.image(options).to_blob { self.format = 'PNG' }
   end
 end
