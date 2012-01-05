@@ -2,10 +2,10 @@
 
 Fractal textures for [Jax](http://blog.jaxgl.com/what-is-jax)!
 
-<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/hm.png" width="128" height="128">
-<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/1.png" width="128" height="128">
-<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/3.png" width="128" height="128">
-<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/4.png" width="128" height="128">
+[<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/hm.png" width="128" height="128">](https://github.com/sinisterchipmunk/jax-fractals/blob/master/screenshots/hm.png)
+[<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/1.png" width="128" height="128">](https://github.com/sinisterchipmunk/jax-fractals/blob/master/screenshots/1.png)
+[<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/3.png" width="128" height="128">](https://github.com/sinisterchipmunk/jax-fractals/blob/master/screenshots/3.png)
+[<img src="https://raw.github.com/sinisterchipmunk/jax-fractals/master/screenshots/4.png" width="128" height="128">](https://github.com/sinisterchipmunk/jax-fractals/blob/master/screenshots/4.png)
 
 ## Why?
 
