@@ -88,3 +88,31 @@ Experiment with the following examples:
 
 Once generated, fractals will be stored in the Rails cache, so that they only need to be generated one time. After generation, the cached copy will be returned instead.
 
+
+### The Heightmap
+
+Height maps will work with any image, not just fractals, but they play so nicely together that I couldn't resist adding the Heightmap model to this library.
+
+The easiest way to create a height map is to create a resource file. In your Rails or Jax project, create the file `app/assets/jax/resources/heightmaps/test.resource` and add the following information to it:
+
+    path: "/fractals/5"
+    xz_scale: 0.75
+    y_scale: 8.0
+    
+This will load the fractal dynamically from the Fractals controller (note: you have to change the path to reference a static image if you're not using Rails), scale its width and depth by 3/4, and then scale its height by 8 to produce a hilly (but not too mountainous!) terrain.
+
+If you want to texture it (and who wouldn't?), create a material like you'd create any other Jax material:
+
+    $ jax g material ground texture
+
+Then, set it in the resource file:
+
+    material: "ground"
+
+#### Actually Using It
+
+To add the "test" heightmap to the world, add it like you would any other Jax model instance. Do this in your Jax controller:
+
+    @world.addObject Heightmap.find "test"
+
+Done!
