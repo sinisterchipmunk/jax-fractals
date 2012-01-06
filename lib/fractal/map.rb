@@ -1,5 +1,6 @@
 class Fractal::Map < Array
   attr_accessor :width, :height
+  alias :row :[]
   
   class Line < Array
     def initialize(count)
@@ -7,7 +8,9 @@ class Fractal::Map < Array
     end
     
     def [](a)
-      raise "Out of bounds: #{a} / #{length}" if a < 0 || a >= length
+      if a.kind_of?(Numeric)
+        raise "Out of bounds: #{a} / #{length}" if a < 0 || a >= length
+      end
       super
     end
     
@@ -23,21 +26,18 @@ class Fractal::Map < Array
   end
   
   def truncate(width, height)
-    pop while length > width
-    for line in self
-      line.pop while line.length > height
-    end
+    pop while length > height
+    collect! { |line| line[0...width] }
     @width, @height = width, height
   end
   
-  def [](a)
-    raise "Out of bounds: #{a} / #{@width}" if a < 0 || a >= @width
-    super
+  def [](x, y)
+    raise "Out of bounds: #{y} / #{@height}" if y < 0 || y >= @height
+    super(y)[x]
   end
   
-  def []=(a, *)
-    raise "Can't mass assign map lines (this is a 2D array)"
-    super
+  def []=(x, y, value)
+    row(y)[x] = value
   end
   
   # Encodes the map as a grayscale bitmap, with a color depth of 8 bits per pixel.

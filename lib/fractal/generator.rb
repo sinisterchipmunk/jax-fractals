@@ -1,11 +1,10 @@
 class Fractal::Generator
   class << self
-    def image(options = {:width => 128, :height => 128, :smoothness => 2,
-                         :high_color => 'ffffff', :low_color => '000000',
-                         :alpha => false})
-      fractal = new options[:width], options[:height],
-                    :seed => options[:seed].to_i,
-                    :smoothness => options[:smoothness]
+    def image(options = {})
+      options.reverse_merge! default_image_options
+      klass = options[:island] ? Fractal::IslandGenerator : self
+      
+      fractal = klass.new options
                     
       if options[:alpha]
         image = Magick::Image.new(fractal.width, fractal.height) { self.background_color = 'transparent' }
@@ -20,6 +19,10 @@ class Fractal::Generator
       image = image.level_colors("##{options[:low_color]}", "##{options[:high_color]}", true)
       image
     end
+    
+    def default_image_options
+      { :alpha => false, :island => false, :high_color => 'ffffff', :low_color => '000000' }
+    end
   end
   
   INITIAL_RANGE = 400
@@ -30,7 +33,9 @@ class Fractal::Generator
   def height; map.height; end
   def bytes;  map.bytes;  end
   
-  def initialize(width, height, options = {})
+  def initialize(options = {})
+    options.reverse_merge! default_options
+    width, height = options[:width], options[:height]
     @map = Fractal::Map.new(pot(max(width, height)) + 1)
     @random = options[:seed] ? Random.new(options[:seed]) : Random.new
     @seed = @random.seed
@@ -43,7 +48,7 @@ class Fractal::Generator
     "".tap do |result|
       for x in 0...width
         for y in 0...height
-          result.concat map[x][y].to_s[0..6].rjust(7)
+          result.concat map[x, y].to_s[0..6].rjust(7)
           result.concat " "
         end
         result.concat "\n"
@@ -52,13 +57,49 @@ class Fractal::Generator
   end
 
   protected
-  def sow_seeds
-    map[      0][       0] ||= 128
-    map[      0][height-1] ||= 128
-    map[width-1][       0] ||= 128
-    map[width-1][height-1] ||= 128
+  def default_options
+    {
+      :width => 128,
+      :height => 128,
+      :smoothness => 2
+    }
   end
   
+  # Seed initial values, then return [step, range]
+  def sow_seeds
+    map[      0,        0] ||= 128
+    map[      0, height-1] ||= 128
+    map[width-1,        0] ||= 128
+    map[width-1, height-1] ||= 128
+
+    [width - 1, INITIAL_RANGE]
+  end
+  
+  def compute(x, y, points, range)
+    c = map[x, y] || 0
+    4.times do |i|
+      if points[i][0] < 0 then points[i][0] += (width - 1)
+      elsif points[i][0] > width then points[i][0] -= (width - 1)
+      elsif points[i][1] < 0 then points[i][1] += (height - 1)
+      elsif points[i][1] > height then points[i][1] -= (height - 1)
+      end
+      c += map[points[i][0], points[i][1]] * 0.25
+    end
+    
+    c += random.rand() * range - range / 2.0
+    if c < 0 then c = 0
+    elsif c > 255 then c = 255
+    end
+    
+    c = c.to_i
+    map[x, y] = c
+    if x == 0 then map[width-1, y] = c
+    elsif x == width-1 then map[0, y] = c
+    elsif y == 0 then map[x, height-1] = c
+    elsif y == height-1 then map[x, 0] = c
+    end
+  end
+
   private
   def half(step)
     step >> 1
@@ -93,40 +134,13 @@ class Fractal::Generator
   end
   
   def generate
-    step = width - 1
-    range = INITIAL_RANGE
-    sow_seeds
+    step, range = *sow_seeds
     
     while step > 1
       diamond step, range
       square step, range
       range /= smoothness
       step >>= 1
-    end
-  end
-  
-  def compute(x, y, points, range)
-    c = map[x][y] || 0
-    4.times do |i|
-      if points[i][0] < 0 then points[i][0] += (width - 1)
-      elsif points[i][0] > width then points[i][0] -= (width - 1)
-      elsif points[i][1] < 0 then points[i][1] += (height - 1)
-      elsif points[i][1] > height then points[i][1] -= (height - 1)
-      end
-      c += map[points[i][0]][points[i][1]] * 0.25
-    end
-    
-    c += random.rand() * range - range / 2.0
-    if c < 0 then c = 0
-    elsif c > 255 then c = 255
-    end
-    
-    c = c.to_i
-    map[x][y] = c
-    if x == 0 then map[width-1][y] = c
-    elsif x == width-1 then map[0][y] = c
-    elsif y == 0 then map[x][height-1] = c
-    elsif y == height-1 then map[x][0] = c
     end
   end
 end

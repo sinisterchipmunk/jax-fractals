@@ -1,9 +1,3 @@
-begin
-  require 'rmagick'
-rescue LoadError
-  raise "RMagick not found! Make sure `gem 'rmagick', '~> 2.13.1'` is in your Gemfile"
-end
-
 require 'fractal'
 
 class FractalGenerator < Rails::Generators::NamedBase
@@ -15,6 +9,7 @@ class FractalGenerator < Rails::Generators::NamedBase
   class_option :high_color, :default => 'ffffff', :desc => "Color to use for high intensity values", :type => :string
   class_option :low_color, :default => '000000', :desc => "Color to use for low intensity values", :type => :string
   class_option :alpha, :default => false, :desc => "Whether to save transparency data", :type => :boolean
+  class_option :island, :default => false, :desc => "Whether the borders should be guaranteed to have 0 intensity", :type => :boolean
   
   def generate_fractal
     create_file File.join(options[:dest], 'images/fractals', "#{name}.png"),
