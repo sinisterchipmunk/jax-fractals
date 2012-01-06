@@ -18,6 +18,7 @@ Because I can! Also, fractals are oh-so-useful for terrain generation, cloud sim
   * Defaults to a grayscale image, but can generate fractals using any color for low and high values
   * Fractals which have power-of-two dimensions can be cleanly tiled
   * Fractals can be generated with an alpha channel, which is helpful for rendering clouds
+  * Can generate "islands" -- that is, there are no high points on the borders
 * Adds a Heightmap model to Jax for processing fractal images into terrain
   * Vertical scale can be set independently from width and depth scale
   * Quickly calculates normals for the height map, for efficient lighting
@@ -67,6 +68,10 @@ Sometimes you need the fractal to include an alpha (transparency) channel, so th
 
     rails generate fractal name-of-fractal --alpha
 
+Occasionally, you'll want to generate a fractal that is guaranteed to have intensity values equal to 0 along its borders. This is useful if you're generating a single cloud in the sky (as opposed to a tileable texture) or an island in the sea. To do this with the generator:
+
+    rails generate fractal name-of-fractal --island
+
 
 ### The Controller
 
@@ -80,6 +85,7 @@ Experiment with the following examples:
 
 * [http://localhost:3000/fractals/1](http://localhost:3000/fractals/1)
 * [http://localhost:3000/fractals/2](http://localhost:3000/fractals/2)
+* [http://localhost:3000/fractals/2?island=1](http://localhost:3000/fractals/2?island=1)
 * [http://localhost:3000/fractals/2?low_color=ff0000&high_color=0000ff](http://localhost:3000/fractals/2?low_color=ff0000&high_color=0000ff)
 * [http://localhost:3000/fractals/2?low_color=ff0000&high_color=0000ff&alpha=true](http://localhost:3000/fractals/2?low_color=ff0000&high_color=0000ff&alpha=true)
 * [http://localhost:3000/fractals/1?width=256&height=256](http://localhost:3000/fractals/1?width=256&height=256)
