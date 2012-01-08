@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Colin MacKenzie IV"]
   s.email       = ["sinisterchipmunk@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Adds a fractal generator, and corresponding controller for Jax projects}
+  s.description = %q{Adds a fractal generator, and corresponding controller for Jax projects. Also adds a Heightmap model for Jax.}
 
   s.rubyforge_project = "jax-fractals"
   
