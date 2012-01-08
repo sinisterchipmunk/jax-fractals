@@ -1,6 +1,13 @@
 describe "Heightmap", ->
   model = null
   
+  describe "while still loading", ->
+    beforeEach -> 
+      model = new Heightmap(path: "/fractals/1")
+    
+    it "should return height 0", ->
+      expect(model.heights(5, 5)).toEqual 0
+  
   describe "loaded from a path", ->
     beforeEach ->
       model = new Heightmap(path: "/fractals/1")

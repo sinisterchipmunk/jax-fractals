@@ -59,6 +59,8 @@ Jax.getGlobal()['Heightmap'] = Jax.Model.create
   #     hm.height( 0  , 0.75)    #=> 1.5
   #
   height: (x, z) ->
+    if @heights == undefined then return 0 # heightmap hasn't loaded yet
+
     x %= @width
     z %= @depth
     x = @width + x if x < 0
